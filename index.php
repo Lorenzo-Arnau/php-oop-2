@@ -5,11 +5,12 @@ class Prodotto {
    protected $disponibility;
    protected $prime;
    protected $shippingTime=5;//days
-   public function __construct($name, $cost,$disponibility)
+   public function __construct($name, $cost,$disponibility,$prime)
    {
       $this->name = $name;
       $this->cost = $cost;
       $this->disponibility = $disponibility;
+      $this->prime = $prime;
    }
    public function getDisponibility(){
        return $this->disponibility;
@@ -17,10 +18,13 @@ class Prodotto {
    public function setDisponibilità($disponibility){
        $this->disponibility=$disponibility;
    }
-   public function setPrime(){
-    $this->prime=true;
-    $this->shippingTime=1;
-}
+   public function getPrime(){
+    return $this->prime;
+   }
+    public function setShipping($shippingTime){
+        $this->shippingTime=$shippingTime;
+    }
+   
 }
 class Tech extends Prodotto{
     protected $screen;
@@ -65,6 +69,7 @@ class Cliente {
     protected $surname;
     protected $paymentMethods=[];
     protected $registrationDate;
+    protected $prime;
     protected $cart=[];
     public function __construct($name, $surname,$registrationDate){
        $this->name = $name;
@@ -77,8 +82,19 @@ class Cliente {
     public function addPaymentMethod($newCard){
         $this->paymentMethods[]=$newCard;
     }
-    public function addtoCart(Prodotto $prodotto){
+    public function addtoCart(Prodotto $prodotto,Cliente $cliente){
+        if ($prodotto->getPrime() == true && $cliente->prime == true) {
+            $prodotto->setShipping(1);
+        }else{
+            echo 'no prime';
+        }
         $this->cart[] = $prodotto;
+    }
+    public function setPrime(){
+        $this->prime=true;
+    }
+    public function getPrime(){
+        return $this->prime;
     }
  }
  class CreditCard {
@@ -127,16 +143,15 @@ class Cliente {
  echo '<pre>' . var_export($client, true) . '</pre>';
  echo 'Il cliente sta valutando di comprare un nuovo Laptop e il suo sguardo ricade su questo  </br>';
  echo '-------------------------------------------------------------------------------------------------------------';
- $laptop=new Tech('Lenovo','115£', 40);
+ $laptop=new Tech('Lenovo','115£', 40,true);
  $laptop->setTech('hd','8gb','i7','alluminium');
  echo '<pre>' . var_export($laptop, true) . '</pre>';
  echo 'Il cliente si iscrive a prime per velocizzare la spedizione </br>';
  echo '-------------------------------------------------------------------------------------------------------------';
- $laptop->setPrime();
- echo '<pre>' . var_export($laptop, true) . '</pre>';
- echo 'Il cliente lo inserisce nel carrello e in seguito lo acquista</br>';
- echo '-------------------------------------------------------------------------------------------------------------';
- $client->addtoCart($laptop);
+ $client->setPrime();
  echo '<pre>' . var_export($client, true) . '</pre>';
- 
+ echo 'Il cliente lo inserisce nel carrello e in seguito lo acquista il programma fa inoltre una verifica su prodotto e cliente per gestire spedizione prime</br>';
+ echo '-------------------------------------------------------------------------------------------------------------';
+ $client->addtoCart($laptop,$client);
+ echo '<pre>' . var_export($client, true) . '</pre>';
 ?>
