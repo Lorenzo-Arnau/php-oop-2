@@ -86,7 +86,7 @@ class Cliente {
         if ($prodotto->getPrime() == true && $cliente->prime == true) {
             $prodotto->setShipping(1);
         }else{
-            echo 'no prime';
+            echo '</br>no prime';
         }
         $this->cart[] = $prodotto;
     }
